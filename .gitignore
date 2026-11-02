@@ -1,0 +1,14 @@
+# Secret credentials - NEVER commit these
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Bot data
+reaction_roles.json
+
+# OS files
+.DS_Store
+Thumbs.db
