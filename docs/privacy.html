@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy — Luna.AI</title>
+  <meta name="description" content="Luna.AI Privacy Policy — What data we collect, how it's used, and how to request deletion."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a14; --surface: #12121f; --card: #1a1a2e;
+      --border: rgba(139,92,246,0.2); --primary: #8b5cf6;
+      --primary-light: #a78bfa; --accent: #6366f1;
+      --text: #e2e8f0; --muted: #94a3b8;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 40% at 50% -10%, rgba(99,102,241,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,20,0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; margin-left: 2rem; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary-light); }
+
+    .page-header { position: relative; z-index: 1; text-align: center; padding: 4rem 2rem 2rem; }
+    .badge { display: inline-block; padding: 0.3rem 1rem; border-radius: 999px; background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); color: #818cf8; font-size: 0.8rem; font-weight: 600; margin-bottom: 1.2rem; }
+    .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; background: linear-gradient(135deg, #fff, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.8rem; }
+    .page-header p { color: var(--muted); font-size: 0.95rem; }
+
+    .content { position: relative; z-index: 1; max-width: 800px; margin: 2rem auto 4rem; padding: 0 2rem; }
+    .doc-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; }
+
+    .data-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .data-table th { background: rgba(139,92,246,0.12); color: var(--primary-light); font-weight: 600; text-align: left; padding: 0.8rem 1rem; border: 1px solid var(--border); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .data-table td { padding: 0.75rem 1rem; border: 1px solid rgba(139,92,246,0.1); color: var(--muted); vertical-align: top; }
+    .data-table tr:hover td { background: rgba(139,92,246,0.04); }
+    .yes { color: #f87171; font-weight: 600; }
+    .no { color: #4ade80; font-weight: 600; }
+
+    .toc { background: rgba(99,102,241,0.07); border: 1px solid rgba(99,102,241,0.2); border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 2rem; }
+    .toc h4 { font-size: 0.85rem; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem; }
+    .toc ol { padding-left: 1.2rem; }
+    .toc li { margin-bottom: 0.3rem; }
+    .toc a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .toc a:hover { color: #818cf8; }
+
+    .last-updated { font-size: 0.8rem; color: var(--muted); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.4rem; }
+    .last-updated span { background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); color: #818cf8; padding: 0.2rem 0.7rem; border-radius: 999px; font-weight: 600; }
+
+    .highlight-box { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.2); border-radius: 12px; padding: 1rem 1.2rem; margin: 1rem 0; }
+    .highlight-box p { color: #86efac; font-size: 0.9rem; margin: 0; }
+
+    section.doc-section { margin-bottom: 2.5rem; scroll-margin-top: 80px; }
+    section.doc-section h2 { font-size: 1.25rem; font-weight: 700; color: #818cf8; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+    section.doc-section p { color: var(--muted); line-height: 1.8; font-size: 0.95rem; margin-bottom: 0.8rem; }
+    section.doc-section ul, section.doc-section ol { padding-left: 1.5rem; margin-bottom: 0.8rem; }
+    section.doc-section li { color: var(--muted); line-height: 1.8; font-size: 0.95rem; margin-bottom: 0.3rem; }
+    section.doc-section li::marker { color: #6366f1; }
+    strong { color: var(--text); font-weight: 600; }
+
+    .contact-box { background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.25); border-radius: 12px; padding: 1.2rem 1.5rem; margin-top: 1rem; }
+    .contact-box p { margin-bottom: 0.3rem; }
+    .contact-box a { color: #818cf8; text-decoration: none; }
+    .contact-box a:hover { text-decoration: underline; }
+
+    footer { position: relative; z-index: 1; text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+    footer a { color: var(--primary-light); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">🌙 Luna.AI</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="badge">🔒 Privacy</div>
+    <h1>Privacy Policy</h1>
+    <p>Last updated: November 2, 2024</p>
+  </div>
+
+  <div class="content">
+    <div class="doc-card">
+
+      <div class="last-updated">
+        Effective date: <span>November 2, 2024</span>
+      </div>
+
+      <div class="highlight-box">
+        <p>🛡️ <strong>Short version:</strong> Luna.AI collects minimal data. We only store what's strictly necessary for the bot to function (like message IDs for reaction roles). We do <strong>not</strong> read your messages, track users, or sell any data.</p>
+      </div>
+
+      <div class="toc">
+        <h4>Table of Contents</h4>
+        <ol>
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#data-collected">Data We Collect</a></li>
+          <li><a href="#data-not-collected">Data We Do NOT Collect</a></li>
+          <li><a href="#how-used">How Data Is Used</a></li>
+          <li><a href="#storage">Data Storage & Security</a></li>
+          <li><a href="#third-party">Third-Party Sharing</a></li>
+          <li><a href="#retention">Data Retention</a></li>
+          <li><a href="#deletion">Data Deletion Requests</a></li>
+          <li><a href="#children">Children's Privacy</a></li>
+          <li><a href="#changes">Changes to This Policy</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ol>
+      </div>
+
+      <section class="doc-section" id="overview">
+        <h2>1 · Overview</h2>
+        <p>Luna.AI ("we", "our", "the bot") is a Discord bot created by <strong>Fullstackingdev</strong>. This Privacy Policy explains what data Luna.AI collects, why it collects it, and how it is handled. We are committed to protecting your privacy and minimizing data collection to only what is essential.</p>
+        <p>By using Luna.AI, you agree to the practices described in this policy.</p>
+      </section>
+
+      <section class="doc-section" id="data-collected">
+        <h2>2 · Data We Collect</h2>
+        <p>Luna.AI collects only the minimum data required to function. Here is an exact breakdown:</p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Data Type</th>
+              <th>What Is Stored</th>
+              <th>Why</th>
+              <th>Stored?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Server (Guild) ID</strong></td>
+              <td>The numeric ID of your Discord server</td>
+              <td>To target bot operations to the correct server</td>
+              <td class="yes">Yes (in .env)</td>
+            </tr>
+            <tr>
+              <td><strong>Message IDs</strong></td>
+              <td>ID of reaction role panel messages</td>
+              <td>To identify which message to listen for reactions on</td>
+              <td class="yes">Yes (reaction_roles.json)</td>
+            </tr>
+            <tr>
+              <td><strong>Channel IDs</strong></td>
+              <td>ID of the channel where reaction role panel was posted</td>
+              <td>For reference in reaction role configuration</td>
+              <td class="yes">Yes (reaction_roles.json)</td>
+            </tr>
+            <tr>
+              <td><strong>Role Names</strong></td>
+              <td>The name of roles mapped to reaction emojis</td>
+              <td>To assign the correct role when a user reacts</td>
+              <td class="yes">Yes (reaction_roles.json)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>All stored data is saved <strong>locally on the bot host machine</strong> in a JSON file (<code>reaction_roles.json</code>). No external database or cloud service is used.</p>
+      </section>
+
+      <section class="doc-section" id="data-not-collected">
+        <h2>3 · Data We Do NOT Collect</h2>
+        <p>Luna.AI explicitly does <strong>not</strong> collect or store:</p>
+        <ul>
+          <li>❌ Message content or chat logs</li>
+          <li>❌ User IDs or personal Discord profile information</li>
+          <li>❌ Usernames, discriminators, or avatars</li>
+          <li>❌ IP addresses</li>
+          <li>❌ Email addresses</li>
+          <li>❌ Voice channel activity</li>
+          <li>❌ DMs or private messages</li>
+          <li>❌ Any Personally Identifiable Information (PII)</li>
+        </ul>
+      </section>
+
+      <section class="doc-section" id="how-used">
+        <h2>4 · How Data Is Used</h2>
+        <p>The limited data Luna.AI stores is used exclusively for:</p>
+        <ul>
+          <li><strong>Reaction Role Functionality:</strong> Matching a Discord reaction event to the correct role assignment, using the stored message ID and emoji-to-role mapping.</li>
+          <li><strong>Bot Operation:</strong> The Guild ID in the configuration is used to target slash commands and server-specific operations.</li>
+        </ul>
+        <p>Data is never used for advertising, profiling, analytics, or any purpose beyond the core bot features.</p>
+      </section>
+
+      <section class="doc-section" id="storage">
+        <h2>5 · Data Storage & Security</h2>
+        <ul>
+          <li><strong>Location:</strong> All data is stored locally on the machine running the bot (the server administrator's host).</li>
+          <li><strong>Format:</strong> A plain JSON file (<code>reaction_roles.json</code>) in the bot directory.</li>
+          <li><strong>Security:</strong> Access is limited to whoever has access to the host machine. The bot token is stored in a <code>.env</code> file and should never be shared.</li>
+          <li><strong>No Cloud Storage:</strong> We do not use any remote databases, cloud services, or third-party storage providers.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section" id="third-party">
+        <h2>6 · Third-Party Sharing</h2>
+        <p>Luna.AI does <strong>not</strong> share any data with third parties. The only external service Luna.AI communicates with is the <strong>Discord API</strong> (to read events and send responses), which is governed by <a href="https://discord.com/privacy" style="color:#818cf8" target="_blank">Discord's own Privacy Policy</a>.</p>
+        <p>We do not sell, rent, trade, or license any data to anyone.</p>
+      </section>
+
+      <section class="doc-section" id="retention">
+        <h2>7 · Data Retention</h2>
+        <p>Data stored by Luna.AI (reaction role configuration) is retained as long as the bot is active and the configuration file exists on the host machine.</p>
+        <ul>
+          <li>Removing the bot from your server does not automatically delete the stored configuration file.</li>
+          <li>The server administrator can manually delete <code>reaction_roles.json</code> at any time to remove all stored data.</li>
+          <li>You may also contact us to request deletion (see below).</li>
+        </ul>
+      </section>
+
+      <section class="doc-section" id="deletion">
+        <h2>8 · Data Deletion Requests</h2>
+        <p>You have the right to request deletion of any data associated with your server. To do so:</p>
+        <ol>
+          <li>Remove Luna.AI from your Discord server.</li>
+          <li>Contact us via GitHub (see below) with your Server ID and a deletion request.</li>
+          <li>We will confirm and purge all associated data within <strong>7 business days</strong>.</li>
+        </ol>
+        <p>Alternatively, if you are self-hosting the bot, simply delete the <code>reaction_roles.json</code> file from your host machine.</p>
+      </section>
+
+      <section class="doc-section" id="children">
+        <h2>9 · Children's Privacy</h2>
+        <p>Luna.AI is not directed at children under the age of 13. We do not knowingly collect any information from children. Discord itself requires users to be at least 13 years old. If you believe a child has interacted with the bot in a way that raises privacy concerns, please contact us immediately.</p>
+      </section>
+
+      <section class="doc-section" id="changes">
+        <h2>10 · Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated effective date. We encourage you to review this page periodically. Continued use of Luna.AI after any changes constitutes your acceptance of the updated policy.</p>
+      </section>
+
+      <section class="doc-section" id="contact">
+        <h2>11 · Contact</h2>
+        <p>For privacy-related questions, data deletion requests, or concerns, please reach out:</p>
+        <div class="contact-box">
+          <p>👤 <strong>Developer:</strong> Fullstackingdev</p>
+          <p>🐙 <strong>GitHub:</strong> <a href="https://github.com/Fullstackingdev" target="_blank">github.com/Fullstackingdev</a></p>
+          <p>🐛 <strong>Issues:</strong> <a href="https://github.com/Fullstackingdev/luna-ai/issues" target="_blank">github.com/Fullstackingdev/luna-ai/issues</a></p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2024 Luna.AI by <a href="https://github.com/Fullstackingdev">Fullstackingdev</a> &nbsp;·&nbsp; <a href="terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a></p>
+  </footer>
+</body>
+</html>

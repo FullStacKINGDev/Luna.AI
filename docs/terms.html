@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terms of Service — Luna.AI</title>
+  <meta name="description" content="Luna.AI Terms of Service — Rules and guidelines for using the Luna.AI Discord Bot."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a14; --surface: #12121f; --card: #1a1a2e;
+      --border: rgba(139,92,246,0.2); --primary: #8b5cf6;
+      --primary-light: #a78bfa; --accent: #6366f1;
+      --text: #e2e8f0; --muted: #94a3b8;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 40% at 50% -10%, rgba(139,92,246,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,20,0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; margin-left: 2rem; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary-light); }
+
+    .page-header { position: relative; z-index: 1; text-align: center; padding: 4rem 2rem 2rem; }
+    .badge { display: inline-block; padding: 0.3rem 1rem; border-radius: 999px; background: rgba(139,92,246,0.15); border: 1px solid var(--border); color: var(--primary-light); font-size: 0.8rem; font-weight: 600; margin-bottom: 1.2rem; }
+    .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; background: linear-gradient(135deg, #fff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.8rem; }
+    .page-header p { color: var(--muted); font-size: 0.95rem; }
+
+    .content { position: relative; z-index: 1; max-width: 800px; margin: 2rem auto 4rem; padding: 0 2rem; }
+    .doc-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; }
+
+    .toc { background: rgba(139,92,246,0.07); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 2rem; }
+    .toc h4 { font-size: 0.85rem; font-weight: 700; color: var(--primary-light); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem; }
+    .toc ol { padding-left: 1.2rem; }
+    .toc li { margin-bottom: 0.3rem; }
+    .toc a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .toc a:hover { color: var(--primary-light); }
+
+    .last-updated { font-size: 0.8rem; color: var(--muted); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.4rem; }
+    .last-updated span { background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); color: var(--primary-light); padding: 0.2rem 0.7rem; border-radius: 999px; font-weight: 600; }
+
+    section.doc-section { margin-bottom: 2.5rem; scroll-margin-top: 80px; }
+    section.doc-section h2 { font-size: 1.25rem; font-weight: 700; color: var(--primary-light); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+    section.doc-section p { color: var(--muted); line-height: 1.8; font-size: 0.95rem; margin-bottom: 0.8rem; }
+    section.doc-section ul, section.doc-section ol { padding-left: 1.5rem; margin-bottom: 0.8rem; }
+    section.doc-section li { color: var(--muted); line-height: 1.8; font-size: 0.95rem; margin-bottom: 0.3rem; }
+    section.doc-section li::marker { color: var(--primary); }
+    strong { color: var(--text); font-weight: 600; }
+
+    .contact-box { background: rgba(139,92,246,0.08); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.5rem; margin-top: 1rem; }
+    .contact-box p { margin-bottom: 0.3rem; }
+    .contact-box a { color: var(--primary-light); text-decoration: none; }
+    .contact-box a:hover { text-decoration: underline; }
+
+    footer { position: relative; z-index: 1; text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+    footer a { color: var(--primary-light); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">🌙 Luna.AI</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="badge">📜 Legal</div>
+    <h1>Terms of Service</h1>
+    <p>Last updated: November 2, 2024</p>
+  </div>
+
+  <div class="content">
+    <div class="doc-card">
+
+      <div class="last-updated">
+        Effective date: <span>November 2, 2024</span>
+      </div>
+
+      <div class="toc">
+        <h4>Table of Contents</h4>
+        <ol>
+          <li><a href="#about">About Luna.AI</a></li>
+          <li><a href="#acceptance">Acceptance of Terms</a></li>
+          <li><a href="#usage">Permitted Use</a></li>
+          <li><a href="#prohibited">Prohibited Conduct</a></li>
+          <li><a href="#responsibilities">User Responsibilities</a></li>
+          <li><a href="#limitations">Limitations of Service</a></li>
+          <li><a href="#termination">Termination</a></li>
+          <li><a href="#changes">Changes to Terms</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ol>
+      </div>
+
+      <section class="doc-section" id="about">
+        <h2>1 · About Luna.AI</h2>
+        <p>Luna.AI is a Discord bot developed and maintained by <strong>Fullstackingdev</strong>. It provides server automation features including:</p>
+        <ul>
+          <li>Automated channel and category creation via the <strong>/setup-server</strong> command</li>
+          <li>Automated role creation with custom colors via <strong>/setup-roles</strong></li>
+          <li>Reaction-based role assignment via <strong>/reaction-role</strong></li>
+        </ul>
+        <p>Luna.AI is designed to be a safe and non-destructive bot. It does <strong>not</strong> kick, ban, delete channels, delete roles, or perform any irreversible destructive action.</p>
+      </section>
+
+      <section class="doc-section" id="acceptance">
+        <h2>2 · Acceptance of Terms</h2>
+        <p>By adding Luna.AI to your Discord server or using any of its features, you agree to be bound by these Terms of Service and Discord's own <a href="https://discord.com/terms" style="color: var(--primary-light)">Terms of Service</a>. If you do not agree, please remove the bot from your server.</p>
+        <p>These Terms apply to all server administrators who invite Luna.AI and to all users who interact with it within a server.</p>
+      </section>
+
+      <section class="doc-section" id="usage">
+        <h2>3 · Permitted Use</h2>
+        <p>You may use Luna.AI for the following purposes:</p>
+        <ul>
+          <li>Setting up and organizing your Discord server's channel structure</li>
+          <li>Creating and managing server roles and their permissions</li>
+          <li>Running reaction role panels so members can self-assign roles</li>
+          <li>General server administration automation within Discord's guidelines</li>
+        </ul>
+        <p>Luna.AI is intended for use on Discord servers that comply with <a href="https://discord.com/guidelines" style="color: var(--primary-light)">Discord's Community Guidelines</a>.</p>
+      </section>
+
+      <section class="doc-section" id="prohibited">
+        <h2>4 · Prohibited Conduct</h2>
+        <p>You agree <strong>not</strong> to use Luna.AI to:</p>
+        <ul>
+          <li>Violate Discord's Terms of Service or Community Guidelines</li>
+          <li>Harass, abuse, or harm other Discord users</li>
+          <li>Spam commands or abuse the bot in a way that degrades service for others</li>
+          <li>Attempt to exploit, reverse-engineer, or tamper with the bot's functionality</li>
+          <li>Use the bot for any unlawful purpose</li>
+          <li>Use the bot on servers that promote hate speech, violence, or illegal activity</li>
+        </ul>
+      </section>
+
+      <section class="doc-section" id="responsibilities">
+        <h2>5 · User Responsibilities</h2>
+        <p>As a server administrator using Luna.AI, you are responsible for:</p>
+        <ul>
+          <li>Ensuring the bot has only the permissions it needs to function correctly</li>
+          <li>Informing your server members about how the bot is used</li>
+          <li>Reviewing any channels, roles, or content created by the bot</li>
+          <li>Complying with applicable local laws and Discord's policies</li>
+          <li>Not sharing your bot token or server credentials with unauthorized parties</li>
+        </ul>
+      </section>
+
+      <section class="doc-section" id="limitations">
+        <h2>6 · Limitations of Service</h2>
+        <p>Luna.AI is provided <strong>"as is"</strong> without any warranties, express or implied. We do not guarantee:</p>
+        <ul>
+          <li>Uninterrupted or error-free operation of the bot</li>
+          <li>Compatibility with all future Discord API changes</li>
+          <li>Any specific uptime or availability</li>
+        </ul>
+        <p>We are not liable for any damages, direct or indirect, resulting from your use of or inability to use Luna.AI.</p>
+      </section>
+
+      <section class="doc-section" id="termination">
+        <h2>7 · Termination</h2>
+        <p>We reserve the right to terminate or restrict Luna.AI's access to any server at our sole discretion, without notice, if we believe these Terms are being violated.</p>
+        <p>You may stop using Luna.AI at any time by removing the bot from your Discord server. Removing the bot does not automatically delete any data already stored — please contact us if you wish for your data to be deleted.</p>
+      </section>
+
+      <section class="doc-section" id="changes">
+        <h2>8 · Changes to Terms</h2>
+        <p>We may update these Terms of Service at any time. Changes will be reflected on this page with an updated effective date. Continued use of Luna.AI after changes constitutes acceptance of the new terms.</p>
+        <p>We encourage you to review this page periodically.</p>
+      </section>
+
+      <section class="doc-section" id="contact">
+        <h2>9 · Contact</h2>
+        <p>If you have questions about these Terms of Service or want to report misuse, please contact us:</p>
+        <div class="contact-box">
+          <p>👤 <strong>Developer:</strong> Fullstackingdev</p>
+          <p>🐙 <strong>GitHub:</strong> <a href="https://github.com/Fullstackingdev" target="_blank">github.com/Fullstackingdev</a></p>
+          <p>🤖 <strong>Bot Repository:</strong> <a href="https://github.com/Fullstackingdev/luna-ai" target="_blank">github.com/Fullstackingdev/luna-ai</a></p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2024 Luna.AI by <a href="https://github.com/Fullstackingdev">Fullstackingdev</a> &nbsp;·&nbsp; <a href="terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a></p>
+  </footer>
+</body>
+</html>
