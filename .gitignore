@@ -12,3 +12,6 @@ reaction_roles.json
 # OS files
 .DS_Store
 Thumbs.db
+
+# Structure backups Luna writes before editing/deleting
+backups/

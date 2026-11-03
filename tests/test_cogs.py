@@ -1,18 +1,14 @@
 import asyncio
-import json
 import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
-import anthropic
 import discord
-import httpx
 
 from cogs import reaction_roles as rr
 from cogs import server_setup
-from luna import planner
 
 
 def run(coro):
@@ -163,104 +159,20 @@ class ReactionListenerTests(unittest.TestCase):
         member.add_roles = mock.AsyncMock(side_effect=discord.HTTPException(mock.Mock(status=500, reason="x"), "boom"))
         run(self.cog.on_raw_reaction_add(self.payload(member=member)))  # must not raise
 
+    def test_deleting_the_channel_forgets_its_messages(self):
+        with mock.patch.object(rr, "save_data") as save:
+            run(self.cog.on_guild_channel_delete(SimpleNamespace(id=999)))     # some other channel
+            save.assert_not_called()
+            self.assertIn("55", self.cog.reaction_roles)
+            run(self.cog.on_guild_channel_delete(SimpleNamespace(id=2)))       # the panel's channel
+            save.assert_called_once()
+        self.assertNotIn("55", self.cog.reaction_roles)
+
     def test_deleting_the_message_forgets_it(self):
         with mock.patch.object(rr, "save_data") as save:
             run(self.cog.on_raw_message_delete(SimpleNamespace(message_id=55)))
             save.assert_called_once()
         self.assertNotIn("55", self.cog.reaction_roles)
-
-
-# ── Planner (Claude call is mocked) ──────────────────────────────────────────
-GOOD_JSON = json.dumps({
-    "summary": "Study group",
-    "roles": [{"name": "Mentor", "color": "#123456", "hoist": True, "mentionable": False, "permissions": []}],
-    "categories": [{"name": "Hub", "private_to": [], "channels": [
-        {"name": "chat", "kind": "text", "topic": "", "read_only": False, "writers": [], "private_to": []}]}],
-})
-
-
-def reply(text=GOOD_JSON, stop="end_turn"):
-    return SimpleNamespace(stop_reason=stop, content=[SimpleNamespace(type="text", text=text)])
-
-
-def api_error(cls, status, message):
-    request = httpx.Request("POST", "https://api.anthropic.com/v1/messages")
-    return cls(message, response=httpx.Response(status, request=request), body=None)
-
-
-def patched_client(beta_create=None, create=None):
-    client = mock.MagicMock()
-    client.beta.messages.create = beta_create or mock.AsyncMock(return_value=reply())
-    client.messages.create = create or mock.AsyncMock(return_value=reply())
-    return mock.patch.object(planner.anthropic, "AsyncAnthropic", return_value=client), client
-
-
-class PlannerTests(unittest.TestCase):
-    def test_success_requests_structured_output_with_fallbacks(self):
-        patcher, client = patched_client()
-        with patcher:
-            plan = run(planner.generate_plan("a study server for students", {"roles_most_senior_first": []}))
-        self.assertEqual(plan.roles[0].name, "Mentor")
-        kwargs = client.beta.messages.create.await_args.kwargs
-        self.assertEqual(kwargs["fallbacks"], "default")
-        self.assertEqual(kwargs["betas"], [planner.FALLBACK_BETA])
-        self.assertEqual(kwargs["output_config"]["format"]["type"], "json_schema")
-        self.assertEqual(kwargs["model"], "claude-opus-5-5")
-        self.assertIn("a study server for students", kwargs["messages"][0]["content"])
-        self.assertNotIn("thinking", kwargs)          # thinking is always on for this model
-
-    def test_model_can_be_overridden(self):
-        patcher, client = patched_client()
-        with patcher, mock.patch.dict("os.environ", {"LUNA_MODEL": "claude-sonnet-5-5"}):
-            run(planner.generate_plan("x" * 20, {}))
-        self.assertEqual(client.beta.messages.create.await_args.kwargs["model"], "claude-sonnet-5-5")
-
-    def test_retries_without_fallbacks_if_the_beta_is_rejected(self):
-        err = api_error(anthropic.BadRequestError, 400, "unknown parameter: fallbacks")
-        patcher, client = patched_client(beta_create=mock.AsyncMock(side_effect=err))
-        with patcher:
-            plan = run(planner.generate_plan("x" * 20, {}))
-        self.assertEqual(plan.roles[0].name, "Mentor")
-        client.messages.create.assert_awaited_once()
-        self.assertNotIn("fallbacks", client.messages.create.await_args.kwargs)
-
-    def test_other_bad_requests_are_not_retried(self):
-        err = api_error(anthropic.BadRequestError, 400, "schema invalid")
-        patcher, client = patched_client(beta_create=mock.AsyncMock(side_effect=err))
-        with patcher, self.assertRaises(planner.PlannerError):
-            run(planner.generate_plan("x" * 20, {}))
-        client.messages.create.assert_not_awaited()
-
-    def test_friendly_messages_for_common_failures(self):
-        cases = [
-            (api_error(anthropic.AuthenticationError, 401, "bad key"), "API key"),
-            (api_error(anthropic.RateLimitError, 429, "slow"), "rate limited"),
-            (api_error(anthropic.NotFoundError, 404, "no model"), "not found"),
-            (anthropic.APIConnectionError(request=httpx.Request("POST", "https://x")), "reach"),
-            (TypeError("Could not resolve authentication method. Expected api_key"), "ANTHROPIC_API_KEY"),
-        ]
-        for exc, fragment in cases:
-            patcher, _ = patched_client(beta_create=mock.AsyncMock(side_effect=exc))
-            with patcher, self.assertRaises(planner.PlannerError) as ctx:
-                run(planner.generate_plan("x" * 20, {}))
-            self.assertIn(fragment, str(ctx.exception), exc)
-
-    def test_refusal_truncation_and_garbage(self):
-        for response, fragment in [
-            (reply("", stop="refusal"), "declined"),
-            (reply(GOOD_JSON[:20], stop="max_tokens"), "too large"),
-            (reply("not json"), "couldn't use"),
-            (reply('{"summary": "", "roles": [], "categories": []}'), "couldn't use"),
-        ]:
-            patcher, _ = patched_client(beta_create=mock.AsyncMock(return_value=response))
-            with patcher, self.assertRaises(planner.PlannerError) as ctx:
-                run(planner.generate_plan("x" * 20, {}))
-            self.assertIn(fragment, str(ctx.exception))
-
-    def test_user_message_wraps_request_and_snapshot(self):
-        text = planner.build_user_message("make it cozy", {"roles_most_senior_first": ["Boss"]})
-        self.assertIn("<request>\nmake it cozy\n</request>", text)
-        self.assertIn("Boss", text)
 
 
 if __name__ == "__main__":

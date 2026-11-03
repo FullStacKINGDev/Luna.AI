@@ -265,6 +265,14 @@ class ReactionRoles(commands.Cog):
         if self.reaction_roles.pop(str(payload.message_id), None) is not None:
             save_data(self.reaction_roles)
 
+    @commands.Cog.listener()
+    async def on_guild_channel_delete(self, channel: discord.abc.GuildChannel) -> None:
+        stale = [m for m, entry in self.reaction_roles.items() if entry.get("channel_id") == channel.id]
+        for message_id in stale:
+            del self.reaction_roles[message_id]
+        if stale:
+            save_data(self.reaction_roles)
+
     async def cog_app_command_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError) -> None:
         await respond_to_error(interaction, error)
 

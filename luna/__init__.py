@@ -1,1 +1,1 @@
-"""Luna.AI core: plan schema, Claude planner and Discord applier."""
+"""Luna.AI core: plan schema, AI planner and Discord applier."""

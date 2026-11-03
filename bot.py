@@ -45,9 +45,13 @@ class LunaBot(commands.Bot):
 async def main():
     if not TOKEN:
         sys.exit("BOT_TOKEN is missing. Copy .env.example to .env and paste your bot token into it.")
-    if not os.getenv("ANTHROPIC_API_KEY"):
-        print("[WARN] ANTHROPIC_API_KEY is not set: /customize will not work until you add it to .env. "
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        print("[WARN] OPENAI_API_KEY is not set: /customize will not work until you add it to .env. "
               "Everything else runs normally.")
+    elif api_key.startswith("sk-ant-") or not api_key.startswith("sk-"):
+        print("[WARN] OPENAI_API_KEY doesn't look like an OpenAI key (they start with 'sk-', "
+              "not 'sk-ant-'). /customize will be rejected until you use a key from platform.openai.com.")
 
     discord.utils.setup_logging(level=logging.INFO)
     async with LunaBot() as bot:

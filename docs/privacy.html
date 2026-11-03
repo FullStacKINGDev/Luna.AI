@@ -100,7 +100,7 @@
       </div>
 
       <div class="highlight-box">
-        <p>🛡️ <strong>Short version:</strong> Luna.AI collects minimal data. We only store what's strictly necessary for the bot to function (like message IDs for reaction roles). We do <strong>not</strong> read your messages, track users, or sell any data. The one exception to "nothing leaves the host" is the optional <strong>/customize</strong> command: when an administrator uses it, their request and the <em>names</em> of the server's roles, categories and channels are sent to Anthropic's API to draft a layout (see <a href="#third-party" style="color:#86efac">Third-Party Sharing</a>).</p>
+        <p>🛡️ <strong>Short version:</strong> Luna.AI collects minimal data. We only store what's strictly necessary for the bot to function (like message IDs for reaction roles). We do <strong>not</strong> read your messages, track users, or sell any data. The one exception to "nothing leaves the host" is the optional <strong>/customize</strong> command: when an administrator uses it, their request and a snapshot of the server's structure: the names, types, colours and short topics (first 80 characters) of its roles, categories and channels, and whether each channel is private are sent to OpenAI's API to plan the change (see <a href="#third-party" style="color:#86efac">Third-Party Sharing</a>).</p>
       </div>
 
       <div class="toc">
@@ -165,9 +165,15 @@
             </tr>
             <tr>
               <td><strong>/customize requests</strong></td>
-              <td>The description an administrator types, and the names of the server's roles, categories and channels</td>
-              <td>To let the AI draft a layout that fits the existing server</td>
-              <td>Not stored by Luna.AI. Sent to Anthropic's API (see section 6)</td>
+              <td>The description an administrator types, and a snapshot of the server's structure: the names, types, colours and short topics (first 80 characters) of its roles, categories and channels, and whether each channel is private</td>
+              <td>To let the AI plan a change that fits the existing server</td>
+              <td>Not stored by Luna.AI. Sent to OpenAI's API (see section 6)</td>
+            </tr>
+            <tr>
+              <td><strong>Structure backups</strong></td>
+              <td>Before editing or deleting, the server's roles, channels and permission settings (IDs, names, topics, permission values). Where a channel has permissions set for an individual member, that member's ID is included. No messages are stored.</td>
+              <td>So an administrator can rebuild after an edit or a deletion</td>
+              <td class="yes">Yes (backups/ folder on the host)</td>
             </tr>
           </tbody>
         </table>
@@ -194,7 +200,8 @@
         <p>The limited data Luna.AI stores is used exclusively for:</p>
         <ul>
           <li><strong>Reaction Role Functionality:</strong> Matching a Discord reaction event to the correct role assignment, using the stored message ID and emoji-to-role mapping.</li>
-          <li><strong>Server Customization:</strong> When an administrator runs <code>/customize</code>, their description and the names of the server's existing roles, categories and channels are used once to generate a proposed layout. The proposal is kept in memory only while the administrator reviews it, and is discarded afterwards. Luna.AI does not keep a copy.</li>
+          <li><strong>Server Customization:</strong> When an administrator runs <code>/customize</code>, their description and a snapshot of the server's structure are used once to plan the change. The plan is kept in memory only while the administrator reviews it, and is discarded afterwards. Luna.AI does not keep a copy of the plan or of the AI's response.</li>
+          <li><strong>Backups:</strong> Before carrying out a plan that edits or deletes anything, Luna.AI writes the server's structure to a JSON file on the host so the administrator has a record to rebuild from. It is used for nothing else.</li>
         </ul>
         <p>Data is never used for advertising, profiling, analytics, or any purpose beyond the core bot features.</p>
       </section>
@@ -203,8 +210,8 @@
         <h2>5 · Data Storage & Security</h2>
         <ul>
           <li><strong>Location:</strong> All data is stored locally on the machine running the bot (the server administrator's host).</li>
-          <li><strong>Format:</strong> A plain JSON file (<code>reaction_roles.json</code>) in the bot directory.</li>
-          <li><strong>Security:</strong> Access is limited to whoever has access to the host machine. The bot token and the Anthropic API key are stored in a <code>.env</code> file and should never be shared.</li>
+          <li><strong>Format:</strong> A plain JSON file (<code>reaction_roles.json</code>) in the bot directory, and one JSON file per backup in the <code>backups</code> folder.</li>
+          <li><strong>Security:</strong> Access is limited to whoever has access to the host machine. The bot token and the OpenAI API key are stored in a <code>.env</code> file and should never be shared.</li>
           <li><strong>No Cloud Storage:</strong> We do not use any remote databases, cloud services, or third-party storage providers.</li>
         </ul>
       </section>
@@ -214,17 +221,17 @@
         <p>Luna.AI does not sell or share data with advertisers or data brokers. It communicates with two external services:</p>
         <ul>
           <li><strong>Discord API</strong>, to read events and send responses, governed by <a href="https://discord.com/privacy" style="color:#818cf8" target="_blank">Discord's own Privacy Policy</a>.</li>
-          <li><strong>Anthropic API</strong>, used <strong>only</strong> when an administrator runs <code>/customize</code>. Luna.AI sends the administrator's typed description and the names of the server's roles, categories and channels so the AI can propose a layout. It does not send message content, member lists, usernames or user IDs. Anthropic processes this data under <a href="https://www.anthropic.com/legal/privacy" style="color:#818cf8" target="_blank">its own Privacy Policy</a>. Please don't put personal information in your <code>/customize</code> request.</li>
+          <li><strong>OpenAI API</strong>, used <strong>only</strong> when an administrator runs <code>/customize</code>. Luna.AI sends the administrator's typed description and a snapshot of the server's structure: the names, types, colours and short topics (first 80 characters) of its roles, categories and channels, and whether each channel is private, so the AI can plan the change. It does not send message content, member lists, usernames or user IDs. OpenAI processes this data under <a href="https://openai.com/policies/privacy-policy" style="color:#818cf8" target="_blank">its own Privacy Policy</a>. Please don't put personal information in your <code>/customize</code> request.</li>
         </ul>
         <p>We do not sell, rent, trade, or license any data to anyone.</p>
       </section>
 
       <section class="doc-section" id="retention">
         <h2>7 · Data Retention</h2>
-        <p>Data stored by Luna.AI (reaction role configuration) is retained as long as the bot is active and the configuration file exists on the host machine.</p>
+        <p>Data stored by Luna.AI (reaction role configuration and structure backups) is retained as long as the files exist on the host machine. Backups are never deleted automatically.</p>
         <ul>
           <li>Removing the bot from your server does not automatically delete the stored configuration file.</li>
-          <li>The server administrator can manually delete <code>reaction_roles.json</code> at any time to remove all stored data.</li>
+          <li>The server administrator can manually delete <code>reaction_roles.json</code> and the <code>backups</code> folder at any time to remove all stored data.</li>
           <li>You may also contact us to request deletion (see below).</li>
         </ul>
       </section>
@@ -237,7 +244,7 @@
           <li>Contact us via GitHub (see below) with your Server ID and a deletion request.</li>
           <li>We will confirm and purge all associated data within <strong>7 business days</strong>.</li>
         </ol>
-        <p>Alternatively, if you are self-hosting the bot, simply delete the <code>reaction_roles.json</code> file from your host machine.</p>
+        <p>Alternatively, if you are self-hosting the bot, simply delete the <code>reaction_roles.json</code> file and the <code>backups</code> folder from your host machine.</p>
       </section>
 
       <section class="doc-section" id="children">

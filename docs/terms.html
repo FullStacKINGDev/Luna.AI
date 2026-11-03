@@ -108,12 +108,12 @@
         <h2>1 · About Luna.AI</h2>
         <p>Luna.AI is a Discord bot developed and maintained by <strong>Fullstackingdev</strong>. It provides server automation features including:</p>
         <ul>
-          <li>AI-assisted server design via <strong>/customize</strong>: an administrator describes the server they want, reviews a proposed layout of roles, categories and channels, and chooses whether to build it</li>
+          <li>AI-assisted server design via <strong>/customize</strong>: an administrator describes what they want, reviews a proposed plan to create, edit, reorder or delete roles, categories and channels, and chooses whether to carry it out</li>
           <li>Automated channel and category creation via the <strong>/setup-server</strong> command</li>
           <li>Automated role creation with custom colors via <strong>/setup-roles</strong></li>
           <li>Reaction-based role assignment via <strong>/reaction-role</strong></li>
         </ul>
-        <p>Luna.AI is designed to be a safe and non-destructive bot. It does <strong>not</strong> kick, ban, delete channels, delete roles, or perform any irreversible destructive action.</p>
+        <p>Luna.AI does <strong>not</strong> kick or ban members, delete or edit messages, or change server settings, and it never changes your server without showing the administrator a plan first. When the administrator approves a plan, Luna.AI can <strong>create, edit, reorder and permanently delete</strong> roles, categories and channels. Deletions are irreversible: Discord cannot restore a deleted channel or its messages. Deleting anything, or granting powerful permissions, requires the administrator to type a confirmation, and Luna.AI saves a backup of the server's structure before editing or deleting.</p>
       </section>
 
       <section class="doc-section" id="acceptance">
@@ -167,7 +167,7 @@
           <li>Compatibility with all future Discord API changes</li>
           <li>Any specific uptime or availability</li>
         </ul>
-        <p><strong>AI-generated layouts.</strong> Layouts proposed by <strong>/customize</strong> are produced by an AI model and may be imperfect or unsuitable for your community. Luna.AI shows you the full plan before anything is built and only creates new roles, categories and channels; it never deletes, renames or moves existing ones, and it never gives generated roles Administrator or other server-management permissions. You are responsible for reviewing the plan and the result.</p>
+        <p><strong>AI-generated plans.</strong> Plans proposed by <strong>/customize</strong> are produced by an AI model and may be imperfect, misread your request, or be unsuitable for your community. Luna.AI shows you the full plan before anything happens and acts only on your approval. It will not touch managed (bot or integration) roles, roles at or above its own, <code>@everyone</code>, or the channels Discord's Community features depend on, and it grants Administrator or other server-management permissions only if you explicitly ask for them. <strong>Deletions are permanent</strong> and may remove a channel's messages with it. You are responsible for reviewing every line of the plan before approving it, and for the result. Luna.AI is not liable for content or configuration lost through an approved plan.</p>
         <p>We are not liable for any damages, direct or indirect, resulting from your use of or inability to use Luna.AI.</p>
       </section>
 
