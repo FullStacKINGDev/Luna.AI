@@ -1,84 +1,105 @@
-import discord
-from discord.ext import commands
-from discord import app_commands
-import os
+"""Starter-template commands: no AI needed.
 
-GUILD_ID = int(os.getenv("GUILD_ID"))
+/setup-roles and /setup-server build a fixed, sensible layout through the same
+engine /customize uses, so they are create-only and safe to re-run.
+"""
+from __future__ import annotations
+
+import discord
+from discord import app_commands
+from discord.ext import commands
+
+from luna.applier import apply_plan
+from luna.embeds import build_result_embed
+from luna.errors import respond_to_error
+from luna.plan import ServerPlan, parse_plan
+
+OWNER, ADMIN, MOD, VIP, MEMBER = "👑 Owner", "⚡ Admin", "🛡️ Moderator", "🎖️ VIP", "✅ Member"
+STAFF = [OWNER, ADMIN, MOD]
+
+
+def _channel(name, *, kind="text", topic="", read_only=False, writers=()):
+    return {"name": name, "kind": kind, "topic": topic, "read_only": read_only,
+            "writers": list(writers), "private_to": []}
+
+
+# ── Edit this to change what /setup-roles and /setup-server build ────────────
+STARTER_TEMPLATE = {
+    "summary": "A general-purpose community with a staff-only area.",
+    "roles": [
+        {"name": OWNER,  "color": "#F1C40F", "hoist": True,  "mentionable": False, "permissions": []},
+        {"name": ADMIN,  "color": "#E74C3C", "hoist": True,  "mentionable": False, "permissions": []},
+        {"name": MOD,    "color": "#3498DB", "hoist": True,  "mentionable": True,
+         "permissions": ["manage_messages", "manage_threads", "moderate_members", "mute_members",
+                         "deafen_members", "move_members", "view_audit_log"]},
+        {"name": VIP,    "color": "#9B59B6", "hoist": True,  "mentionable": True,  "permissions": []},
+        {"name": MEMBER, "color": "#2ECC71", "hoist": False, "mentionable": True,  "permissions": []},
+    ],
+    "categories": [
+        {"name": "📢 Information", "private_to": [], "channels": [
+            _channel("announcements", kind="announcement", read_only=True, writers=STAFF),
+            _channel("rules", read_only=True, writers=STAFF),
+            _channel("server-guide", read_only=True, writers=STAFF),
+        ]},
+        {"name": "💬 General", "private_to": [], "channels": [
+            _channel("general"), _channel("bot-commands"), _channel("media"), _channel("memes"),
+        ]},
+        {"name": "🎮 Gaming", "private_to": [], "channels": [
+            _channel("gaming-chat"), _channel("looking-for-group"),
+        ]},
+        {"name": "🎵 Music", "private_to": [], "channels": [_channel("music-commands")]},
+        {"name": "🔧 Admin", "private_to": STAFF, "channels": [
+            _channel("logs"), _channel("admin-chat"),
+        ]},
+    ],
+}
+
+
+def starter_plan(*, roles: bool, channels: bool) -> ServerPlan:
+    plan = parse_plan(STARTER_TEMPLATE)
+    if not roles:
+        plan.roles = []
+    if not channels:
+        plan.categories = []
+    return plan
+
 
 class ServerSetup(commands.Cog):
-    """Cog for setting up channels, categories, and roles."""
+    """Cog for setting up channels, categories, and roles from a fixed template."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # ── /setup-server ──────────────────────────────────────────────────────
-    @app_commands.command(name="setup-server", description="Auto-setup channels and categories for this server")
-    @app_commands.default_permissions(administrator=True)
-    async def setup_server(self, interaction: discord.Interaction):
+    async def _run(self, interaction: discord.Interaction, plan: ServerPlan, command: str) -> None:
         await interaction.response.defer(ephemeral=True)
-        guild = interaction.guild
+        report = await apply_plan(
+            interaction.guild, plan,
+            reason=f"Luna.AI /{command} by {interaction.user} ({interaction.user.id})",
+        )
+        embed = build_result_embed(report)
+        if report.nothing_to_do and not report.errors and not report.aborted:
+            embed.title = "ℹ️ Everything already exists"
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
-        # ── Define your server layout here ──────────────────────────────
-        layout = {
-            "📢 Information": ["📣・announcements", "📜・rules", "🗺️・server-guide"],
-            "💬 General": ["💬・general", "🤖・bot-commands", "📸・media", "😂・memes"],
-            "🎮 Gaming": ["🎮・gaming-chat", "🔊・looking-for-group"],
-            "🎵 Music": ["🎵・music-commands"],
-            "🔧 Admin": ["📋・logs", "⚙️・admin-chat"],
-        }
-
-        created = []
-        for category_name, channels in layout.items():
-            # Create category if it doesn't exist
-            category = discord.utils.get(guild.categories, name=category_name)
-            if not category:
-                category = await guild.create_category(category_name)
-
-            for ch_name in channels:
-                existing = discord.utils.get(guild.text_channels, name=ch_name.split("・")[1] if "・" in ch_name else ch_name)
-                if not existing:
-                    await guild.create_text_channel(ch_name.split("・")[1] if "・" in ch_name else ch_name, category=category)
-                    created.append(ch_name)
-
-        if created:
-            await interaction.followup.send(f"✅ Created {len(created)} channel(s):\n" + "\n".join(f"  • {c}" for c in created), ephemeral=True)
-        else:
-            await interaction.followup.send("ℹ️ All channels already exist!", ephemeral=True)
-
-    # ── /setup-roles ───────────────────────────────────────────────────────
-    @app_commands.command(name="setup-roles", description="Auto-create server roles with colors")
+    @app_commands.command(name="setup-server", description="Create the starter channels and categories")
+    @app_commands.guild_only()
     @app_commands.default_permissions(administrator=True)
-    async def setup_roles(self, interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=True)
-        guild = interaction.guild
+    @app_commands.checks.has_permissions(administrator=True)
+    @app_commands.checks.bot_has_permissions(manage_channels=True, manage_roles=True)
+    async def setup_server(self, interaction: discord.Interaction) -> None:
+        await self._run(interaction, starter_plan(roles=False, channels=True), "setup-server")
 
-        # ── Define your roles here (name, color, hoist, mentionable) ────
-        roles_to_create = [
-            {"name": "👑 Owner",     "color": discord.Color.gold(),         "hoist": True},
-            {"name": "⚡ Admin",      "color": discord.Color.red(),          "hoist": True},
-            {"name": "🛡️ Moderator", "color": discord.Color.blue(),         "hoist": True},
-            {"name": "🎖️ VIP",       "color": discord.Color.purple(),       "hoist": True},
-            {"name": "✅ Member",     "color": discord.Color.green(),        "hoist": False},
-            {"name": "🔇 Muted",      "color": discord.Color.dark_gray(),    "hoist": False},
-        ]
+    @app_commands.command(name="setup-roles", description="Create the starter roles with colors")
+    @app_commands.guild_only()
+    @app_commands.default_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
+    @app_commands.checks.bot_has_permissions(manage_roles=True)
+    async def setup_roles(self, interaction: discord.Interaction) -> None:
+        await self._run(interaction, starter_plan(roles=True, channels=False), "setup-roles")
 
-        created = []
-        for role_data in roles_to_create:
-            existing = discord.utils.get(guild.roles, name=role_data["name"])
-            if not existing:
-                await guild.create_role(
-                    name=role_data["name"],
-                    color=role_data["color"],
-                    hoist=role_data["hoist"],
-                    mentionable=True
-                )
-                created.append(role_data["name"])
-
-        if created:
-            await interaction.followup.send(f"✅ Created {len(created)} role(s):\n" + "\n".join(f"  • {r}" for r in created), ephemeral=True)
-        else:
-            await interaction.followup.send("ℹ️ All roles already exist!", ephemeral=True)
+    async def cog_app_command_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError) -> None:
+        await respond_to_error(interaction, error)
 
 
-async def setup(bot):
+async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(ServerSetup(bot))

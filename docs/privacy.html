@@ -89,18 +89,18 @@
   <div class="page-header">
     <div class="badge">🔒 Privacy</div>
     <h1>Privacy Policy</h1>
-    <p>Last updated: November 2, 2024</p>
+    <p>Last updated: November 3, 2026</p>
   </div>
 
   <div class="content">
     <div class="doc-card">
 
       <div class="last-updated">
-        Effective date: <span>November 2, 2024</span>
+        Effective date: <span>November 3, 2026</span>
       </div>
 
       <div class="highlight-box">
-        <p>🛡️ <strong>Short version:</strong> Luna.AI collects minimal data. We only store what's strictly necessary for the bot to function (like message IDs for reaction roles). We do <strong>not</strong> read your messages, track users, or sell any data.</p>
+        <p>🛡️ <strong>Short version:</strong> Luna.AI collects minimal data. We only store what's strictly necessary for the bot to function (like message IDs for reaction roles). We do <strong>not</strong> read your messages, track users, or sell any data. The one exception to "nothing leaves the host" is the optional <strong>/customize</strong> command: when an administrator uses it, their request and the <em>names</em> of the server's roles, categories and channels are sent to Anthropic's API to draft a layout (see <a href="#third-party" style="color:#86efac">Third-Party Sharing</a>).</p>
       </div>
 
       <div class="toc">
@@ -142,8 +142,8 @@
             <tr>
               <td><strong>Server (Guild) ID</strong></td>
               <td>The numeric ID of your Discord server</td>
-              <td>To target bot operations to the correct server</td>
-              <td class="yes">Yes (in .env)</td>
+              <td>To tie a reaction role message to the server it belongs to</td>
+              <td class="yes">Yes (reaction_roles.json)</td>
             </tr>
             <tr>
               <td><strong>Message IDs</strong></td>
@@ -158,10 +158,16 @@
               <td class="yes">Yes (reaction_roles.json)</td>
             </tr>
             <tr>
-              <td><strong>Role Names</strong></td>
-              <td>The name of roles mapped to reaction emojis</td>
+              <td><strong>Role IDs</strong></td>
+              <td>The ID of each role mapped to a reaction emoji</td>
               <td>To assign the correct role when a user reacts</td>
               <td class="yes">Yes (reaction_roles.json)</td>
+            </tr>
+            <tr>
+              <td><strong>/customize requests</strong></td>
+              <td>The description an administrator types, and the names of the server's roles, categories and channels</td>
+              <td>To let the AI draft a layout that fits the existing server</td>
+              <td>Not stored by Luna.AI. Sent to Anthropic's API (see section 6)</td>
             </tr>
           </tbody>
         </table>
@@ -188,7 +194,7 @@
         <p>The limited data Luna.AI stores is used exclusively for:</p>
         <ul>
           <li><strong>Reaction Role Functionality:</strong> Matching a Discord reaction event to the correct role assignment, using the stored message ID and emoji-to-role mapping.</li>
-          <li><strong>Bot Operation:</strong> The Guild ID in the configuration is used to target slash commands and server-specific operations.</li>
+          <li><strong>Server Customization:</strong> When an administrator runs <code>/customize</code>, their description and the names of the server's existing roles, categories and channels are used once to generate a proposed layout. The proposal is kept in memory only while the administrator reviews it, and is discarded afterwards. Luna.AI does not keep a copy.</li>
         </ul>
         <p>Data is never used for advertising, profiling, analytics, or any purpose beyond the core bot features.</p>
       </section>
@@ -198,14 +204,18 @@
         <ul>
           <li><strong>Location:</strong> All data is stored locally on the machine running the bot (the server administrator's host).</li>
           <li><strong>Format:</strong> A plain JSON file (<code>reaction_roles.json</code>) in the bot directory.</li>
-          <li><strong>Security:</strong> Access is limited to whoever has access to the host machine. The bot token is stored in a <code>.env</code> file and should never be shared.</li>
+          <li><strong>Security:</strong> Access is limited to whoever has access to the host machine. The bot token and the Anthropic API key are stored in a <code>.env</code> file and should never be shared.</li>
           <li><strong>No Cloud Storage:</strong> We do not use any remote databases, cloud services, or third-party storage providers.</li>
         </ul>
       </section>
 
       <section class="doc-section" id="third-party">
         <h2>6 · Third-Party Sharing</h2>
-        <p>Luna.AI does <strong>not</strong> share any data with third parties. The only external service Luna.AI communicates with is the <strong>Discord API</strong> (to read events and send responses), which is governed by <a href="https://discord.com/privacy" style="color:#818cf8" target="_blank">Discord's own Privacy Policy</a>.</p>
+        <p>Luna.AI does not sell or share data with advertisers or data brokers. It communicates with two external services:</p>
+        <ul>
+          <li><strong>Discord API</strong>, to read events and send responses, governed by <a href="https://discord.com/privacy" style="color:#818cf8" target="_blank">Discord's own Privacy Policy</a>.</li>
+          <li><strong>Anthropic API</strong>, used <strong>only</strong> when an administrator runs <code>/customize</code>. Luna.AI sends the administrator's typed description and the names of the server's roles, categories and channels so the AI can propose a layout. It does not send message content, member lists, usernames or user IDs. Anthropic processes this data under <a href="https://www.anthropic.com/legal/privacy" style="color:#818cf8" target="_blank">its own Privacy Policy</a>. Please don't put personal information in your <code>/customize</code> request.</li>
+        </ul>
         <p>We do not sell, rent, trade, or license any data to anyone.</p>
       </section>
 
@@ -246,7 +256,7 @@
         <div class="contact-box">
           <p>👤 <strong>Developer:</strong> Fullstackingdev</p>
           <p>🐙 <strong>GitHub:</strong> <a href="https://github.com/Fullstackingdev" target="_blank">github.com/Fullstackingdev</a></p>
-          <p>🐛 <strong>Issues:</strong> <a href="https://github.com/Fullstackingdev/luna-ai/issues" target="_blank">github.com/Fullstackingdev/luna-ai/issues</a></p>
+          <p>🐛 <strong>Issues:</strong> <a href="https://github.com/FullStacKINGDev/Luna.AI/issues" target="_blank">github.com/FullStacKINGDev/Luna.AI/issues</a></p>
         </div>
       </section>
 
@@ -254,7 +264,7 @@
   </div>
 
   <footer>
-    <p>© 2024 Luna.AI by <a href="https://github.com/Fullstackingdev">Fullstackingdev</a> &nbsp;·&nbsp; <a href="terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a></p>
+    <p>© 2026 Luna.AI by <a href="https://github.com/Fullstackingdev">Fullstackingdev</a> &nbsp;·&nbsp; <a href="terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a></p>
   </footer>
 </body>
 </html>
